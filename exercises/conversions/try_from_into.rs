@@ -2,7 +2,7 @@
 // Basically, this is the same as From. The main difference is that this should return a Result type
 // instead of the target type itself.
 // You can read more about it at https://doc.rust-lang.org/std/convert/trait.TryFrom.html
-use std::convert::{TryInto, TryFrom};
+use std::convert::{TryFrom, TryInto};
 
 #[derive(Debug)]
 struct Color {
@@ -10,8 +10,6 @@ struct Color {
     green: u8,
     blue: u8,
 }
-
-// I AM NOT DONE
 
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
@@ -26,6 +24,11 @@ struct Color {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = String;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let red = u8::try_from(tuple.0).expect("Could not convert red to u8");
+        let green = u8::try_from(tuple.1).unwrap();
+        let blue = u8::try_from(tuple.2).unwrap();
+
+        Ok(Color { red, green, blue })
     }
 }
 
@@ -33,6 +36,11 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = String;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let red = u8::try_from(arr[0]).expect("Could not convert red to u8.");
+        let green = u8::try_from(arr[1]).expect("Could not convert green to u8.");
+        let blue = u8::try_from(arr[2]).expect("Could not convert blue to u8");
+
+        Ok(Color { red, green, blue })
     }
 }
 
@@ -40,6 +48,19 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = String;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() > 3 {
+            return Err("Invalid slice length.".to_string());
+        }
+
+        if let [red, green, blue] = slice {
+            return Ok(Color {
+                red: u8::try_from(*red).expect("Could not convert red color."),
+                green: u8::try_from(*green).expect("Could not convert green color."),
+                blue: u8::try_from(*blue).expect("Could not convert green color."),
+            });
+        }
+
+        Err("Invalid".to_string())
     }
 }
 
