@@ -11,7 +11,7 @@ pub fn factorial(num: u64) -> u64 {
     // - recursion
     // Execute `rustlings hint iterators4` for hints.
 
-    (1..).take_while(|&i| i <= num).product()
+    (1..=num).product()
 }
 
 #[cfg(test)]
